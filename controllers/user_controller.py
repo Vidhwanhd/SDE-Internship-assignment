@@ -20,13 +20,18 @@ def get_user(user_id):
         return jsonify({"message": "User not found"}), 404  # 404 Not Found
 
 # Create a new user
-@user_blueprint.route('/', methods=['POST'])
+@user_blueprint.route('', methods=['POST'])
 def create_user():
-    data = request.get_json()
-    if not validate_user_data(data):
-        return jsonify({"message": "Invalid data"}), 400  # 400 Bad Request
-    create_user_service(data)
-    return jsonify({"message": "User created successfully"}), 201  # 201 Created
+    try:
+        data = request.get_json()
+        if not validate_user_data(data):
+            return jsonify({"message": "Invalid data"}), 400  # 400 Bad Request
+        create_user_service(data)
+        return jsonify({"message": "User created successfully"}), 201  # 201 Created
+    except Exception as e:
+        import traceback
+        traceback.print_exc()  # 👈 logs full error stack to console
+        return jsonify({"error": str(e)}), 500
 
 # Update user information
 @user_blueprint.route('/<int:user_id>', methods=['PUT'])

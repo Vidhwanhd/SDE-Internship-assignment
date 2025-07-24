@@ -3,8 +3,8 @@ from utils.security import hash_password, check_password  # From utils module
 
 # Create a new user
 def create_user_service(data):
-    hashed_password = hash_password(data['password'])  # Encrypt password before saving
-    UserModel.create_user(data['name'], data['email'], hashed_password)
+    password = hash_password(data['password'])  # 🔐 hash before storing
+    UserModel.create_user(data['name'], data['email'], password)
 
 # Get all users
 def get_all_users_service():

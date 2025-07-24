@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 
 # Specify bcrypt as the hashing algorithm
-pwd_context = CryptContext(schemes=["bcrypt"], default="bcrypt")
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], default="pbkdf2_sha256")
 
 def hash_password(password: str) -> str:
     """Hash the password before storing it."""
