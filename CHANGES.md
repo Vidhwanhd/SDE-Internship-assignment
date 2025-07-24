@@ -1,69 +1,75 @@
 Major Issues Identified
-Missing users Table: The app was throwing an error due to the absence of the users table in the SQLite database.
+Missing users Table: The application failed to start properly due to the absence of the users table in the SQLite database.
 
-Password Hashing Issue: passlib couldn't find the bcrypt backend, causing password hashing failures.
+Password Hashing Error: The app initially attempted to use bcrypt, but due to missing backend support, password hashing failed.
 
-404 Errors for POST, PUT, DELETE: These routes were not working due to route misconfigurations or method mismatches.
+404 Errors for POST, PUT, DELETE: These endpoints returned 404 due to incorrect route configurations or HTTP method issues.
 
-Authentication Issues: The login logic was not correctly verifying passwords against the hashed values stored in the database.
+Authentication Bug: Passwords were not being verified correctly against stored hashes, causing login failures.
 
-Changes Made
-Database Initialization: Created an init_db.py script to initialize the database and create the users table.
+ Changes Implemented
+Database Initialization: Created an init_db.py script to initialize the database and create the users table automatically.
 
-Password Hashing Fix: Installed bcrypt and configured passlib to use it as the backend.
+Password Hashing Updated: Switched to a supported hashing algorithm like sha256_crypt (or another from passlib) that doesn’t require external dependencies.
 
-Corrected Routes: Ensured routes for POST, PUT, and DELETE methods were properly defined and mapped.
+Route Configuration Fixed: Properly defined all POST, PUT, and DELETE routes to align with Flask's method routing.
 
-Login Logic Update: Implemented correct password verification using check_password from passlib.
+Login Logic Corrected: Updated the authentication flow to correctly compare plaintext passwords with hashed values using the chosen hashing scheme (e.g., sha256_crypt.verify()).
 
-Assumptions and Trade-offs
-Basic Data Validation: Assumed simple validation for user data; could be expanded with more checks like unique email.
+ Assumptions and Trade-offs
+Minimal Validation: Implemented basic validation; additional constraints like unique email and format checking can be added later.
 
-Password Security: Used bcrypt for password hashing. While secure, it might be less performant for large-scale systems. Could consider Argon2 for future improvements.
+Password Hashing with Pure Python Backend: Used a built-in hash scheme from passlib (e.g., sha256_crypt, pbkdf2_sha256) to avoid external dependencies like bcrypt. While secure, for production, using stronger algorithms such as argon2 is advisable.
 
-SQLite for Simplicity: SQLite was used for simplicity, but a more scalable database like PostgreSQL is preferred for production.
+SQLite Chosen for Simplicity: Used SQLite for ease of development. PostgreSQL or MySQL is recommended for scaling in production environments.
+ 
+What I Would Do With More Time
+Security Enhancements:
 
-What I Would Do with More Time
-Improve Security: Implement Argon2 for password hashing, and consider adding OAuth for external logins.
+Upgrade password hashing to argon2 for stronger security.
 
-Write Tests: Add unit and integration tests for routes and services.
+Implement OAuth-based login (e.g., Google or GitHub).
 
-Error Handling: Improve error handling across the app.
+Testing:
 
-Role Management: Implement user roles (admin, user) for better access control.
+Add full unit and integration test coverage for routes and services.
 
-Database Optimization: Migrate to PostgreSQL and add indexing for performance.
+Error Handling:
 
+Improve error responses with custom exceptions and error messages.
 
+Role-Based Access Control:
+
+Add support for user roles (e.g., admin, user) to manage permissions.
+
+Database Optimization:
+
+Switch to PostgreSQL and add indexing to improve performance.
 
 AI Usage
 Tools Used:
-ChatGPT (by OpenAI)
+ChatGPT (OpenAI)
 
 GitHub Copilot
 
-What AI Was Used For:
-Code Suggestions & Refactoring:
+AI Helped With:
+Code Refactoring:
 
-Assisted in refactoring and optimizing code, such as reorganizing service functions and creating helper functions.
+Suggested improved structure for route and controller logic.
 
-Helped clean up route definitions and ensured proper HTTP method handling.
+Bug Fixing:
 
-Troubleshooting:
-
-Used ChatGPT to troubleshoot issues related to password hashing and database initialization.
-
-Helped debug errors like MissingBackendError and 404 Not Found by providing solutions for missing dependencies and incorrect route setup.
+Helped debug hashing issues and resolve missing table/database errors.
 
 Documentation:
 
-Assisted in writing the CHANGES.md file, summarizing major issues, changes, and future considerations.
+Assisted in summarizing the changes and decisions made throughout the development.
 
-AI-Generated Code Modified or Rejected:
-Code Rejected:
+AI-Suggested Code That Was Modified or Rejected:
+Modified:
 
-Some of the initial suggestions for route setup and error handling were modified to better align with Flask best practices and project structure.
+Password hashing logic was updated to use a supported algorithm (sha256_crypt or similar), not bcrypt.
 
-Code Modified:
+Rejected:
 
-AI-suggested code for hashing passwords was modified to ensure it worked with passlib's bcrypt backend.
+Some route setup and error handling suggestions were adjusted to better fit Flask’s best practices and the project constraints.

@@ -5,7 +5,9 @@ from controllers.user_controller import user_blueprint
 app = Flask(__name__)
 
 # Register Blueprints
-app.register_blueprint(user_blueprint, url_prefix='/users')
+app.register_blueprint(user_blueprint, url_prefix='/user')   # for /user/<id>
+app.register_blueprint(user_blueprint, url_prefix='/users')  # for /users
+
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
 @app.route('/')
