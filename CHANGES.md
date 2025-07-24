@@ -1,75 +1,53 @@
-Major Issues Identified
-Missing users Table: The application failed to start properly due to the absence of the users table in the SQLite database.
+✅ Major Issues Identified
+Missing users Table: The app initially crashed due to the users table not being present in the SQLite database.
 
-Password Hashing Error: The app initially attempted to use bcrypt, but due to missing backend support, password hashing failed.
+Password Hashing Issue: Password hashing failed because the app was not properly configured to use a secure and available hashing backend.
 
-404 Errors for POST, PUT, DELETE: These endpoints returned 404 due to incorrect route configurations or HTTP method issues.
+404 Errors on POST, PUT, DELETE: These routes were unreachable due to misconfigured Flask route declarations or missing method handlers.
 
-Authentication Bug: Passwords were not being verified correctly against stored hashes, causing login failures.
+Authentication Failure: The login system wasn’t properly comparing plaintext passwords with hashed ones stored in the database.
 
- Changes Implemented
-Database Initialization: Created an init_db.py script to initialize the database and create the users table automatically.
+🔧 Changes Made
+Database Initialization: Created an init_db.py script to set up the SQLite database and create the required users table.
 
-Password Hashing Updated: Switched to a supported hashing algorithm like sha256_crypt (or another from passlib) that doesn’t require external dependencies.
+Password Hashing Fix: Replaced previous insecure or broken hashing logic with pbkdf2_sha256 via passlib. This uses a secure KDF and doesn’t require external system dependencies.
 
-Route Configuration Fixed: Properly defined all POST, PUT, and DELETE routes to align with Flask's method routing.
+Route Fixes: Corrected Flask route definitions to ensure POST, PUT, DELETE, and other HTTP methods are registered and work as intended.
 
-Login Logic Corrected: Updated the authentication flow to correctly compare plaintext passwords with hashed values using the chosen hashing scheme (e.g., sha256_crypt.verify()).
+Login Fix: Updated login logic to use pwd_context.verify() for secure password checking using the pbkdf2_sha256 scheme.
 
- Assumptions and Trade-offs
-Minimal Validation: Implemented basic validation; additional constraints like unique email and format checking can be added later.
+⚖️ Assumptions and Trade-offs
+Minimal Validation: Assumed simple form validation. Future improvements could include email uniqueness, password strength policies, and input sanitization.
 
-Password Hashing with Pure Python Backend: Used a built-in hash scheme from passlib (e.g., sha256_crypt, pbkdf2_sha256) to avoid external dependencies like bcrypt. While secure, for production, using stronger algorithms such as argon2 is advisable.
+Password Security: pbkdf2_sha256 provides strong password protection, with wide support and no system-level dependencies. For even stronger security, argon2 may be considered later.
 
-SQLite Chosen for Simplicity: Used SQLite for ease of development. PostgreSQL or MySQL is recommended for scaling in production environments.
- 
-What I Would Do With More Time
-Security Enhancements:
+SQLite Use: Chosen for development simplicity. Not ideal for production due to concurrency and scalability limitations — PostgreSQL is a better production choice.
 
-Upgrade password hashing to argon2 for stronger security.
+🚀 With More Time, I Would...
+Improve Security: Migrate to argon2 or integrate OAuth (e.g., Google, GitHub) for secure third-party login.
 
-Implement OAuth-based login (e.g., Google or GitHub).
+Add Tests: Write unit tests for authentication, CRUD operations, and error handling.
 
-Testing:
+Handle Errors Better: Return structured JSON error responses and proper HTTP codes.
 
-Add full unit and integration test coverage for routes and services.
+Role Management: Implement role-based access (e.g., admin, user) to restrict access to certain endpoints.
 
-Error Handling:
+Optimize Database: Migrate to PostgreSQL with proper indexing and migrations using Alembic.
 
-Improve error responses with custom exceptions and error messages.
-
-Role-Based Access Control:
-
-Add support for user roles (e.g., admin, user) to manage permissions.
-
-Database Optimization:
-
-Switch to PostgreSQL and add indexing to improve performance.
-
-AI Usage
-Tools Used:
-ChatGPT (OpenAI)
+🤖 AI Usage Summary
+Tools:
+ChatGPT (by OpenAI)
 
 GitHub Copilot
 
-AI Helped With:
-Code Refactoring:
+How AI Helped:
+Code Refactoring: Assisted in writing and optimizing Flask routes and database interaction functions.
 
-Suggested improved structure for route and controller logic.
+Troubleshooting: Helped debug missing table errors, password hashing issues, and HTTP method misconfigurations.
 
-Bug Fixing:
+Documentation: Helped summarize issues and solutions for this CHANGES.md.
 
-Helped debug hashing issues and resolve missing table/database errors.
+AI Code Review:
+Rejected: All bcrypt-related code was removed due to unnecessary dependency issues.
 
-Documentation:
-
-Assisted in summarizing the changes and decisions made throughout the development.
-
-AI-Suggested Code That Was Modified or Rejected:
-Modified:
-
-Password hashing logic was updated to use a supported algorithm (sha256_crypt or similar), not bcrypt.
-
-Rejected:
-
-Some route setup and error handling suggestions were adjusted to better fit Flask’s best practices and the project constraints.
+Modified: Password handling logic was updated to use pbkdf2_sha256 from passlib, with CryptContext handling both hashing and verification.
